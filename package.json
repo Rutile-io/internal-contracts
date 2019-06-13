@@ -1,0 +1,24 @@
+{
+  "name": "internalcontracts",
+  "version": "1.0.0",
+  "description": "Here will be all smart contracts that are used internally within Rutile.",
+  "main": "index.js",
+  "scripts": {
+    "asbuild:untouched:milestones": "asc contracts/milestones/index.ts -b build/untouched-milestones.wasm -t build/untouched-milestones.wat --sourceMap --validate --debug",
+    "asbuild:optimized:milestones": "asc contracts/milestones/index.ts -b build/optimized-milestones.wasm -t build/optimized-milestones.wat --sourceMap --validate --optimize",
+    "asbuild": "npm run asbuild:untouched:milestones && npm run asbuild:optimized:milestones"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Rutile-io/internal-contracts.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Rutile-io/internal-contracts/issues"
+  },
+  "homepage": "https://github.com/Rutile-io/internal-contracts#readme",
+  "devDependencies": {
+    "assemblyscript": "github:AssemblyScript/assemblyscript"
+  }
+}

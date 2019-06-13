@@ -1,0 +1,11 @@
+export declare function storageStore(pathOffset: i32, valueOffset: i32): void;
+export declare function getAddress(resultPointer: i32): void;
+export declare function getCallDataSize(): i32;
+export declare function revert(offset: i32, length: i32): i32;
+export declare function callDataCopy(resultOffset: i32, dataOffset: i32, length: i32): i32;
+export declare function storageLoad(pathOffset: i32, resultOffset: i32): i32;
+export declare function finish(dataOffset: i32, dataLength: i32): i32;
+export declare function getCaller(resultOffset: i32): i32;
+export declare function log(dataOffset: i32, length: i32): i32;
+export declare function getCallValue(resultOffset: i32): void;
+export declare function getTransactionDifficulty(resultOffset: i32): i32;
