@@ -1,4 +1,4 @@
-export declare function storageStore(pathOffset: i32, valueOffset: i32): void;
+export declare function storageStore(pathOffset: i32, valueOffset: i32, pathLength?: i32, valueLength?: i32): void;
 export declare function getAddress(resultPointer: i32): void;
 export declare function getCallDataSize(): i32;
 export declare function revert(offset: i32, length: i32): i32;
