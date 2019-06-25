@@ -20,5 +20,9 @@
   "homepage": "https://github.com/Rutile-io/internal-contracts#readme",
   "devDependencies": {
     "assemblyscript": "github:AssemblyScript/assemblyscript"
+  },
+  "dependencies": {
+    "bignum": "github:MaxGraey/bignum.wasm",
+    "ts-node": "^8.3.0"
   }
 }

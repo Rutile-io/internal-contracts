@@ -1,9 +1,10 @@
-import "allocator/arena"
+import "rt"
 import { reverseBytes } from '../utils/reverseBytes'
-import { registerAsValidator } from "./validator";
+import { registerAsValidator, getNextValidator } from "./validator";
 import '../utils/env';
-import { getCallDataSize, revert, callDataCopy } from "../utils/env";
+import { getCallDataSize, revert, callDataCopy, finish } from "../utils/env";
 import { print32 } from "../utils/debug";
+import { debug } from "../rutile/Debug";
 
 export function main(): void {
     // Make sure a function is being called
@@ -11,7 +12,7 @@ export function main(): void {
         revert(0, 0);
     }
 
-    let ptrSelector = <i32>memory.allocate(4);
+    let ptrSelector = <i32>__alloc(4, 0);
     callDataCopy(ptrSelector, 0, 4);
     let selector = reverseBytes(load<i32>(ptrSelector));
 
@@ -19,6 +20,9 @@ export function main(): void {
     switch(selector) {
         case 0x00000001:
             registerAsValidator();
+            break;
+        case 0x00000002:
+            getNextValidator();
             break;
         default:
             revert(0, 0);

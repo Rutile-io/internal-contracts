@@ -1,11 +1,9 @@
 import { getCallValue, log, finish, revert, storageLoad, getCaller, storageStore } from "../utils/env";
-import { print32, printMemHex, print64 } from "../utils/debug";
 import { reverseBytes, reverseBytes64 } from "../utils/reverseBytes";
-import { storage } from '../rutile/Storage';
-import { debug } from '../rutile/Debug';
+import { system } from '../rutile/System';
 
 const MINIMUM_DEPOSIT = 32;
-
+ 
 /**
  * Registers the address as a staker allowing them to create milestones
  *
@@ -13,7 +11,7 @@ const MINIMUM_DEPOSIT = 32;
  */
 export function registerAsValidator(): void {
     // Make sure the call value is enough to stake.
-    let ptrCallValue = <i32>memory.allocate(8);
+    let ptrCallValue = <i32>__alloc(8, 0);
     getCallValue(ptrCallValue);
     let callValue = reverseBytes64(load<i64>(ptrCallValue));
 
@@ -22,21 +20,24 @@ export function registerAsValidator(): void {
         revert(0, 0);
     }
 
+    system.keccak256('hello world');
+
     // Load the current amount of slots in
-    let ptrSender = <i32>memory.allocate(32);
+    let ptrSender = <i32>__alloc(32, 0);
     getCaller(ptrSender);
-    let ptrSenderSlots = <i32>memory.allocate(4);
+    let ptrSenderSlots = <i32>__alloc(4, 0);
     storageLoad(ptrSender, ptrSenderSlots);
     let senderSlots = load<i32>(ptrSenderSlots);
-
     senderSlots += 1
 
     // Add the slot to the current address
     store<i32>(ptrSenderSlots, senderSlots);
-    printMemHex(ptrSenderSlots, 4);
-
     storageStore(ptrSender, ptrSenderSlots, 32, 4);
 
     // Return the amount of slots the address is assigned to
     finish(ptrSenderSlots, 4);
+}
+
+export function getNextValidator(): void {
+    
 }

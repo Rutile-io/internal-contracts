@@ -1,8 +1,10 @@
 import { printString } from '../utils/debug';
+import StringMemory from '../rutile/utils/StringMemory';
 
 export class Debug {
     print(message: string): void {
-        printString(message.toUTF8(), message.lengthUTF8 - 1);
+        const strMemory = new StringMemory(message);
+        printString(strMemory.pointer, strMemory.length);
     }
 }
 

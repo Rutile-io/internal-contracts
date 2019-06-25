@@ -1,5 +1,6 @@
-import "allocator/arena";
+import "rt";
 import { storageStore, storageLoad } from "../utils/env";
+import StringMemory from "./utils/StringMemory";
 
 export class Storage {
 
@@ -11,8 +12,11 @@ export class Storage {
      * @memberof Storage
      */
     setItem(key: string, value: string): void {
+        const keyMemory = new StringMemory(key);
+        const valueMemory = new StringMemory(value);
+
         // TODO: Key should be hashed before stored.
-        storageStore(key.toUTF8(), value.toUTF8(), key.lengthUTF8 - 1, value.lengthUTF8 - 1);
+        storageStore(keyMemory.pointer, valueMemory.pointer, keyMemory.length, valueMemory.length);
     }
 
     /**
@@ -24,8 +28,11 @@ export class Storage {
      * @memberof Storage
      */
     getItem(key: string): string {
-        let ptrValue = memory.allocate(32);
-        storageLoad(key.toUTF8(), ptrValue);
+        const keyMemory = new StringMemory(key);
+        let ptrValue = __alloc(32, 0);
+        storageLoad(keyMemory.pointer, ptrValue);
+
+        load<ArrayBuffer>(ptrValue);
         
         return String.fromUTF8(ptrValue, 32);
     }
