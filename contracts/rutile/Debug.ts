@@ -1,10 +1,19 @@
-import { printString } from '../utils/debug';
-import StringMemory from '../rutile/utils/StringMemory';
+import { printString, print32, printMemHex } from '../utils/debug';
 
 export class Debug {
     print(message: string): void {
-        const strMemory = new StringMemory(message);
-        printString(strMemory.pointer, strMemory.length);
+        let messageBuffer = String.UTF8.encode(message);
+        let ptrMessage = changetype<usize>(messageBuffer);
+
+        printString(ptrMessage, messageBuffer.byteLength);
+    }
+
+    print32(value: i32): void {
+        print32(value);
+    }
+
+    printMemHex(offset: i32, length: i32): void {
+        printMemHex(offset, length);
     }
 }
 

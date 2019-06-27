@@ -1,26 +1,31 @@
-import { call, getReturnDataSize, returnDataCopy } from "../utils/env";
+import { call, getReturnDataSize, returnDataCopy, finish } from "../utils/env";
 import { printMemHex, print32, printString } from "../utils/debug";
 import { u256 } from '../../node_modules/bignum/assembly/integer/u256';
 import StringMemory from "./utils/StringMemory";
 import { toAddressPointer } from "./utils/toAddress";
 import { debug } from "./Debug";
+import { createTypedArray } from "./utils/createTypedArray";
 
 let KECCAK_ADDRESS = u256.fromU64(9);
 
 class System {
     keccak256(value: string): ArrayBuffer {
         let ptrAddress = toAddressPointer(KECCAK_ADDRESS);
-        const valueMem = new StringMemory(value);
+        let valueBuffer = String.UTF8.encode(value);
+        let ptrValue = changetype<usize>(valueBuffer);
 
-        debug.print('Well fuuuuuu ');
-        debug.print(value);
-        printString(valueMem.pointer, valueMem.length);
+        // Make sure our value is not changing in memory
+        __retain(ptrValue);
 
         // Calls the system contract for Keccak256
-        let returnCode = call(8000000, ptrAddress, 0, valueMem.pointer, valueMem.length);
+        // TODO: Place in the actual current gas amount
+        let returnCode = call(8000000, ptrAddress, 0, ptrValue, valueBuffer.byteLength);
+
+        // Release the value
+        __release(ptrValue);
 
         // 1 Means the code execution has failed.
-        if (returnCode === 1) {
+        if (returnCode === 1 || returnCode === 2) {
             return new ArrayBuffer(0);
         }
 
@@ -28,9 +33,7 @@ class System {
         let ptrDataCopy = __alloc(returnDataSize, idof<ArrayBuffer>());
         returnDataCopy(ptrDataCopy, 0, returnDataSize);
 
-        let resultBuffer = changetype<ArrayBuffer>(ptrDataCopy);
-
-        return resultBuffer;
+        return changetype<ArrayBuffer>(ptrDataCopy);
     }
 }
 
